@@ -1,4 +1,5 @@
-
+# Arduino Project
+# Auto Trashcan
 
 ## IR SENSOR
 
@@ -15,3 +16,21 @@
  - output is >1000 for no touch, <1000 for moist
  - not yet fully calibrated
 
+## Inductive Sensor
+
+### setup
+ - output pin 10
+ - not yet finished
+
+## Ultrasonic Sensor
+
+### setup
+ - sensor 1: trigger = 6, echo = 7
+ - sensor 2: trigger = 4, echo = 5
+ - sensor 3: trigger = 2, echo = 3
+ - trashcan limit if <10 cm
+
+### Possible updates
+ - Add trashcan dashboard for trash content: 
+ - if trashcan is 1000cm  content = 1000 - distance
+ - dashboard "[ 1: 100cm, 2: 100cm, 3: 100cm ]" 

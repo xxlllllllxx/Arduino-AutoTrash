@@ -14,12 +14,16 @@ const int moisture_sensor = A0;
 const int inductive_sensor = 10;
 const int ultrasonic_trigger_1 = 6;
 const int ultrasonic_echo_1 = 7;
+const int ultrasonic_trigger_2 = 4;
+const int ultrasonic_echo_2 = 5;
+const int ultrasonic_trigger_3 = 2;
+const int ultrasonic_echo_3 = 3;
 
 const int stepper_1 = 13;
 
 
 // LCD
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 1);
 const char* messages[] = {
   "Arduino Trash",
   "Trashcan 1: FULL",
@@ -51,6 +55,8 @@ void loop()
 
   
   check_level(1, ultrasonic_trigger_1, ultrasonic_echo_1);
+  check_level(2, ultrasonic_trigger_2, ultrasonic_echo_2);
+  check_level(3, ultrasonic_trigger_3, ultrasonic_echo_3);
 
   
   
