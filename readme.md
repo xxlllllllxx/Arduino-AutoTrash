@@ -1,5 +1,5 @@
 # Arduino Project
-  Auto Trashcan
+  ## Auto Trashcan
 
 ## IR SENSOR
 
