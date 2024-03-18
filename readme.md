@@ -29,6 +29,11 @@
  - sensor 2: trigger = 4, echo = 5
  - sensor 3: trigger = 2, echo = 3
  - trashcan limit if <10 cm
+ 
+## LCD with I2C
+ - SCL for clock pin A5
+ - SDA for dataline A4
+
 
 ### Possible updates
  - Add trashcan dashboard for trash content: 
