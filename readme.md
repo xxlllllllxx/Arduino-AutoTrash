@@ -1,4 +1,6 @@
 # Arduino Project - Auto Trashcan
+Project using multiple different sensors for an Automatic trash segragation
+
 
 ## IR SENSOR
 
