@@ -16,10 +16,6 @@ const int moisture_sensor = A0;
 const int inductive_sensor = 11;
 const int ultrasonic_trigger_1 = 6;
 const int ultrasonic_echo_1 = 7;
-const int ultrasonic_trigger_2 = 4;
-const int ultrasonic_echo_2 = 5;
-const int ultrasonic_trigger_3 = 2;
-const int ultrasonic_echo_3 = 3;
 
 const int stepper_1 = 13;
 
@@ -40,9 +36,6 @@ const char* messages[] = {
   "Trash Detected !                        ",//4
   "                                        ",//5
 };
-
-
-
 
 void setup()
 {
@@ -65,12 +58,6 @@ void loop()
   
   if (ir_flag || mo_flag || in_flag)
     calculate(ir_flag, mo_flag, in_flag);
-  else {
-    delay(500);
-    check_level(1, ultrasonic_trigger_1, ultrasonic_echo_1);
-  // check_level(2, ultrasonic_trigger_2, ultrasonic_echo_2);
-  // check_level(3, ultrasonic_trigger_3, ultrasonic_echo_3);
-  }
   
   if (debug) {
     Serial.print("moisture : ");
