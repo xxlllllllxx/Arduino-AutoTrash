@@ -6,7 +6,7 @@
 
 const bool debug = true;
 const int output = 0;
-const int moisture_sensitivity = 990; // less than this is detected
+const int moisture_sensitivity = 950; // less than this is detected
 const int trashcan_limit = 10; // less than this in cm is detected
 const int sensor_delay = 100;
 const int passes = 10;
