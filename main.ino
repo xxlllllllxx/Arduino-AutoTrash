@@ -6,7 +6,7 @@
 
 const bool debug = true;
 const int output = 0;
-const int moisture_sensitivity = 950; // less than this is detected
+const int moisture_sensitivity = 600; // less than this is detected
 const int trashcan_limit = 10; // less than this in cm is detected
 const int sensor_delay = 100;
 const int passes = 10;
@@ -19,7 +19,9 @@ const int ultrasonic_echo_1 = 7;
 
 const int stepper_1 = 13;
 
-bool check_array[passes][3] ={};
+bool check_array[passes][3];
+const int num_bins = 3;
+int bins[num_bins] = {0, 0, 0};
 
 
 // LCD
@@ -55,16 +57,22 @@ void loop()
 {
   bool ir_flag = digitalRead(infrared_sensor) == LOW;
   bool mo_flag = analogRead(moisture_sensor) < moisture_sensitivity;
-  bool in_flag = digitalRead(inductive_sensor) == LOW;
+  bool in_flag = digitalRead(inductive_sensor) == HIGH && false;
   
   if (ir_flag || mo_flag || in_flag)
     calculate(ir_flag, mo_flag, in_flag);
+
+  delay(1000);
   
   if (debug) {
-    Serial.print("moisture : ");
+    Serial.print("infrared : ");
+    Serial.println(digitalRead(infrared_sensor));
+    Serial.print("moisture: ");
     Serial.println(analogRead(moisture_sensor));
     Serial.print("inductive: ");
     Serial.println(digitalRead(inductive_sensor));
+    Serial.print("ultrasonic 1: ");
+    Serial.println(check_level(1));
   }
 }
 
@@ -77,8 +85,8 @@ void print(int l1 = 0, int l2 = 5){
 
 void monitor(){
   if(debug){
-    //Serial.println("MONITOR START");
-    delay(500);
+    // Serial.println("MONITOR START");
+    // delay(1000)
   }
 }
 
@@ -99,6 +107,7 @@ void selector(int num){
   }
 }
 
+
 void calculate(bool ir_flag, bool mo_flag, bool in_flag)
 {
   // LOGIC
@@ -108,21 +117,29 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag)
   }
 }
 
+void loop_bins(){
+  for(int i = 1; i <= num_bins; i++){
+    selector(i);
+    bins[i-1] = check_level(i);
+  }
+}
 
-void check_level(int index,int trigPin, int echoPin) {
-  digitalWrite(trigPin, LOW);
+
+int check_level(int index) {
+  digitalWrite(ultrasonic_trigger_1, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
+  digitalWrite(ultrasonic_trigger_1, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+  digitalWrite(ultrasonic_trigger_1, LOW);
   
   float distance;
   // calibrated
-  distance = (pulseIn(echoPin, HIGH)*.0343)/2;
+  distance = (pulseIn(ultrasonic_echo_1, HIGH)*.0343)/2;
 
   int m_flag = 5;
   if(distance < trashcan_limit){
     m_flag = index;
   }
   print(0, m_flag);
+  return distance;
 }
