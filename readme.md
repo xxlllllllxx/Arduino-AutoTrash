@@ -27,9 +27,11 @@ Project using multiple different sensors for an Automatic trash segragation
 
 ### setup
  - sensor 1: trigger = 6, echo = 7
- - sensor 2: trigger = 4, echo = 5
- - sensor 3: trigger = 2, echo = 3
  - trashcan limit if <10 cm
+
+## LCD
+ - SCL pin = A5 clock
+ - SDA pin = A4 data
 
 ### Possible updates
  - Add trashcan dashboard for trash content: 

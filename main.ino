@@ -26,6 +26,7 @@ bool check_array[passes][3] ={};
 const int col = 16;
 const int row = 2;
 LiquidCrystal_I2C lcd(0x27, col, row);
+// 4 pins SCL: A5 SDA:A4
 // setup: 40 chars per line 16 in display
 
 const char* messages[] = {
@@ -54,7 +55,7 @@ void loop()
 {
   bool ir_flag = digitalRead(infrared_sensor) == LOW;
   bool mo_flag = analogRead(moisture_sensor) < moisture_sensitivity;
-  bool in_flag = digitalRead(inductive_sensor) == HIGH;
+  bool in_flag = digitalRead(inductive_sensor) == LOW;
   
   if (ir_flag || mo_flag || in_flag)
     calculate(ir_flag, mo_flag, in_flag);
@@ -77,7 +78,7 @@ void print(int l1 = 0, int l2 = 5){
 void monitor(){
   if(debug){
     //Serial.println("MONITOR START");
-    //delay(5000);
+    delay(500);
   }
 }
 
