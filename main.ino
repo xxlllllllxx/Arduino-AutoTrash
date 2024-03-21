@@ -81,6 +81,23 @@ void monitor(){
   }
 }
 
+void drop(bool open) {
+  if(open){
+    
+  } else {
+    
+  }
+}
+
+void selector(int num){
+  switch(num){
+    case 1: break;
+    case 2: break;
+    case 3: break;
+    default: break;
+  }
+}
+
 void calculate(bool ir_flag, bool mo_flag, bool in_flag)
 {
   // LOGIC
