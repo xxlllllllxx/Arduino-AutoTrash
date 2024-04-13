@@ -6,7 +6,6 @@
 // 0 = No Trash detected
 // 1 = Trash detected
 
-const bool debug = true;
 const int output = 0;
 const int moisture_sensitivity = 600;
 const int inductive_sensitivity = 170;
@@ -33,6 +32,8 @@ int pass_bin = 0;
 int pass_count = 0;
 const int num_bins = 3;
 
+bool hasTrash = false;
+
 
 // LCD
 const int col = 16;
@@ -53,6 +54,7 @@ const char* messages[] = {
   "No Bio Waste                            ",//8
   "Bio Waste                               ",//9
   "Dropping...                             ",//10
+  "Verifiying...                           ",//11
 };
 
 void setup()
@@ -66,8 +68,6 @@ void setup()
   pinMode(dropper_motor_r, OUTPUT);
   myStepper.setSpeed(100); 
   lcd.begin();
-  if(debug)
-    Serial.println("DEBUG!!!");
 }
 
 void loop()
@@ -82,19 +82,16 @@ void loop()
 
   delay(500);
   
-  if (debug) {
-    Serial.print("infrared : ");
-    Serial.println(digitalRead(infrared_sensor));
-    Serial.print("moisture: ");
-    Serial.println(analogRead(moisture_sensor));
-    Serial.print("inductive: ");
-    Serial.println(analogRead(inductive_sensor));
-    Serial.print("capacitive: ");
-    Serial.println(digitalRead(capacitive_sensor));
-    Serial.print("ultrasonic 1: ");
-    Serial.println(check_level(1));
-  }
-//  drop();
+  Serial.print("infrared : ");
+  Serial.println(digitalRead(infrared_sensor));
+  Serial.print("moisture: ");
+  Serial.println(analogRead(moisture_sensor));
+  Serial.print("inductive: ");
+  Serial.println(analogRead(inductive_sensor));
+  Serial.print("capacitive: ");
+  Serial.println(digitalRead(capacitive_sensor));
+  Serial.print("ultrasonic 1: ");
+  Serial.println(check_level(1));
 }
 
 void print(int l1 = 0, int l2 = 5){
@@ -105,12 +102,14 @@ void print(int l1 = 0, int l2 = 5){
 }
 
 void drop() {
-  digitalWrite(dropper_motor, HIGH);
-  delay(dropper_delay);
-  digitalWrite(dropper_motor, LOW);
-  digitalWrite(dropper_motor_r, HIGH);
-  delay(dropper_delay);
-  digitalWrite(dropper_motor_r, LOW);
+  if(hasTrash){
+    digitalWrite(dropper_motor, HIGH);
+    delay(dropper_delay);
+    digitalWrite(dropper_motor, LOW);
+    digitalWrite(dropper_motor_r, HIGH);
+    delay(dropper_delay);
+    digitalWrite(dropper_motor_r, LOW);
+  }
 }
 
 void selector(int num){
@@ -125,10 +124,8 @@ void selector(int num){
 void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
 {
   // LOGIC
-  if (ir_flag || mo_flag || in_flag || ca_flag ){
-    print(4, 6);
-
-    
+  if (ir_flag || mo_flag || in_flag || ca_flag){
+    hasTrash = true;
     if(in_flag && ir_flag && !mo_flag && !ca_flag){
       // Metallic Waste
       if(pass_bin == 1){
@@ -157,25 +154,29 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
       pass_bin = 3;
     }
     delay(10);
+    
     Serial.println("PASSES: " + String(pass_count) + " " + String(pass_bin));
-
+    if(pass_bin != 0){
+      print(11, pass_bin + 6);
+    } else {
+      print(4, 6);
+    }
+    
     if(pass_count > passes){
-      pass_count = 0;
       print(4, pass_bin + 6);
-      selector(pass_bin);
-      drop();
+      if(selector(pass_bin)){
+        pass_count = 0;
+        drop();
+      } else {
+        selector(1);
+        print(pass_bin + 6, pass_bin);
+      }
       pass_bin = 0;
     }
+  } else {
+    hasTrash = false;
   }
 }
-
-//void loop_bins(){
-//  for(int i = 1; i <= num_bins; i++){
-//    selector(i);
-//    bins[i-1] = check_level(i);
-//  }
-//}
-
 
 int check_level(int index) {
   digitalWrite(ultrasonic_trigger_1, LOW);
