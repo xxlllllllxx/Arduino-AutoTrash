@@ -1,11 +1,6 @@
 #include "src/LiquidCrystal_I2C.h"
 #include "src/Stepper.h"
 
-
-// OUTPUT VALUES:
-// 0 = No Trash detected
-// 1 = Trash detected
-
 const int output = 0;
 //const int moisture_sensitivity = 600;
 const int inductive_sensitivity = 150;
@@ -93,14 +88,14 @@ void loop()
 
   delay(sensor_time);
   
-  Serial.print("infrared : ");
-  Serial.println(digitalRead(infrared_sensor));
-  Serial.print("inductive: ");
-  Serial.println(analogRead(inductive_sensor));
-  Serial.print("capacitive: ");
-  Serial.println(digitalRead(capacitive_sensor));
-  Serial.print("ultrasonic 1: ");
-  Serial.println(check_level(1));
+  // Serial.print("infrared : ");
+  // Serial.println(digitalRead(infrared_sensor));
+  // Serial.print("inductive: ");
+  // Serial.println(analogRead(inductive_sensor));
+  // Serial.print("capacitive: ");
+  // Serial.println(digitalRead(capacitive_sensor));
+  // Serial.print("ultrasonic 1: ");
+  // Serial.println(check_level(1));
 }
 
 
@@ -121,7 +116,7 @@ bool selector(int num){
     myStepper.step((loc - num) * stepsPerRevolution);
   }
   loc = num;
-  return true;
+  return check_level > trashcan_limit;
 }
 
 

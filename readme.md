@@ -8,20 +8,19 @@ Project using multiple different sensors for an Automatic trash segragation
  - output to pin 9
  - distance up to approx. 5cm
  - output 0 if detected
- 
-## MOISTURE SENSOR
-
-### setup
- - output to pin A0
- - moist sensitivity, no value == +1000
- - output is >1000 for no touch, <1000 for moist
- - not yet fully calibrated
 
 ## Inductive Sensor
 
 ### setup
+ - output pin A1
+ - inductive sensitivity = 150
+ - less than that is detected
+ - 
+## Capacitive Sensor
+
+### setup
  - output pin 10
- - not yet finished
+ - output 1 if detected
 
 ## Ultrasonic Sensor
 
@@ -33,7 +32,12 @@ Project using multiple different sensors for an Automatic trash segragation
  - SCL pin = A5 clock
  - SDA pin = A4 data
 
-### Possible updates
- - Add trashcan dashboard for trash content: 
- - if trashcan is 1000cm  content = 1000 - distance
- - dashboard "[ 1: 100cm, 2: 100cm, 3: 100cm ]" 
+## Stepper motor
+ - pins ln1 = 2, ln2 = 3, ln3 = 2m ln4 = 4 digital
+ - using selector function
+ - rollSensitivity - how much roll to next trashcan
+
+## Regular Motor
+ - for dropper
+ - open and close - clockwise and counterclockwise
+ - using 2 relays to reverse the polarity of motor  
