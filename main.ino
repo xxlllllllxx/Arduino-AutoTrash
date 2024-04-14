@@ -7,17 +7,18 @@
 // 1 = Trash detected
 
 const int output = 0;
-const int moisture_sensitivity = 600;
-const int inductive_sensitivity = 170;
+//const int moisture_sensitivity = 600;
+const int inductive_sensitivity = 150;
 const int trashcan_limit = 10;
 const int sensor_delay = 100;
 const int stepsPerRevolution = 240;
 const int rollSensitivity = 20;
 const int passes = 3;
 const int dropper_delay = 500;
+const int sensor_time = 2-0;
 
 const int infrared_sensor = 9;
-const int moisture_sensor = A0;
+//const int moisture_sensor = A0;
 const int inductive_sensor = A1;
 const int capacitive_sensor = 10;
 const int dropper_motor = 8;
@@ -50,8 +51,8 @@ const char* messages[] = {
   "Trash Detected !                        ",//4
   "                                        ",//5
   "Identifiyng...                          ",//6
-  "Metallic Waste                          ",//7
-  "No Bio Waste                            ",//8
+  "Recyclable Waste                        ",//7
+  "Non Bio Waste                           ",//8
   "Bio Waste                               ",//9
   "Dropping...                             ",//10
   "Verifiying...                           ",//11
@@ -70,22 +71,30 @@ void setup()
   lcd.begin();
 }
 
+
+void print(int l1 = 0, int l2 = 5){
+  lcd.clear();
+  lcd.print(messages[l1]);
+  lcd.print(messages[l2]);
+  delay(sensor_delay);
+}
+
 void loop()
 {
   bool ir_flag = digitalRead(infrared_sensor) == LOW;
-  bool mo_flag = analogRead(moisture_sensor) < moisture_sensitivity;
+//  bool mo_flag = analogRead(moisture_sensor) < moisture_sensitivity;
   bool in_flag = analogRead(inductive_sensor) < inductive_sensitivity;
   bool ca_flag = digitalRead(capacitive_sensor) == HIGH;
   
-  if (ir_flag || mo_flag || in_flag || ca_flag)
-    calculate(ir_flag, mo_flag, in_flag, ca_flag);
+  if (ir_flag || in_flag || ca_flag)
+    calculate(ir_flag, in_flag, ca_flag);
+  else 
+    print();
 
-  delay(500);
+  delay(sensor_time);
   
   Serial.print("infrared : ");
   Serial.println(digitalRead(infrared_sensor));
-  Serial.print("moisture: ");
-  Serial.println(analogRead(moisture_sensor));
   Serial.print("inductive: ");
   Serial.println(analogRead(inductive_sensor));
   Serial.print("capacitive: ");
@@ -94,12 +103,6 @@ void loop()
   Serial.println(check_level(1));
 }
 
-void print(int l1 = 0, int l2 = 5){
-  lcd.clear();
-  lcd.print(messages[l1]);
-  lcd.print(messages[l2]);
-  delay(sensor_delay);
-}
 
 void drop() {
   if(hasTrash){
@@ -112,22 +115,23 @@ void drop() {
   }
 }
 
-void selector(int num){
+bool selector(int num){
   Serial.println(messages[num + 6]);
   for(int i = 0; i < rollSensitivity; i++){
     myStepper.step((loc - num) * stepsPerRevolution);
   }
   loc = num;
+  return true;
 }
 
 
-void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
+void calculate(bool ir_flag, bool in_flag, bool ca_flag)
 {
   // LOGIC
-  if (ir_flag || mo_flag || in_flag || ca_flag){
+  if (ir_flag || in_flag || ca_flag){
     hasTrash = true;
-    if(in_flag && ir_flag && !mo_flag && !ca_flag){
-      // Metallic Waste
+    if(in_flag && ir_flag && !ca_flag){
+      // Metallic Waste Recyclable
       if(pass_bin == 1){
         pass_count = pass_count + 1;
       } else {
@@ -135,8 +139,8 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
       }
       pass_bin = 1;
     }
-    if(mo_flag && ir_flag && !ca_flag && !in_flag){
-      // wet Bio Waste 
+    else if(ir_flag && !ca_flag && !in_flag){
+      // Bio Waste 
       if(pass_bin == 2){
         pass_count = pass_count + 1;
       } else {
@@ -144,8 +148,8 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
       }
       pass_bin = 2;
     }
-    if(ir_flag && ca_flag && !in_flag && !mo_flag){
-      // not wet Non Bio waste
+    else if(ir_flag && ca_flag && !in_flag){
+      // Non Bio waste
       if(pass_bin == 3){
         pass_count = pass_count + 1;
       } else {
@@ -153,14 +157,11 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
       }
       pass_bin = 3;
     }
-    delay(10);
     
     Serial.println("PASSES: " + String(pass_count) + " " + String(pass_bin));
     if(pass_bin != 0){
       print(11, pass_bin + 6);
-    } else {
-      print(4, 6);
-    }
+    } 
     
     if(pass_count > passes){
       print(4, pass_bin + 6);
@@ -175,6 +176,8 @@ void calculate(bool ir_flag, bool mo_flag, bool in_flag, bool ca_flag)
     }
   } else {
     hasTrash = false;
+    pass_count = 0;
+    pass_bin = 0;
   }
 }
 
