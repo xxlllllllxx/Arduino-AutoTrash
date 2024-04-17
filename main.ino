@@ -67,7 +67,8 @@ void setup()
 }
 
 
-void print(int l1 = 0, int l2 = 5){
+void print(int l1 = 0, int l2 = 5)
+{
   lcd.clear();
   lcd.print(messages[l1]);
   lcd.print(messages[l2]);
@@ -99,7 +100,8 @@ void loop()
 }
 
 
-void drop() {
+void drop()
+{
   if(hasTrash){
     digitalWrite(dropper_motor, HIGH);
     delay(dropper_delay);
@@ -110,7 +112,8 @@ void drop() {
   }
 }
 
-bool selector(int num){
+bool selector(int num)
+{
   Serial.println(messages[num + 6]);
   for(int i = 0; i < rollSensitivity; i++){
     myStepper.step((loc - num) * stepsPerRevolution);
@@ -176,7 +179,8 @@ void calculate(bool ir_flag, bool in_flag, bool ca_flag)
   }
 }
 
-int check_level(int index) {
+int check_level(int index) 
+{
   digitalWrite(ultrasonic_trigger_1, LOW);
   delayMicroseconds(2);
   digitalWrite(ultrasonic_trigger_1, HIGH);
