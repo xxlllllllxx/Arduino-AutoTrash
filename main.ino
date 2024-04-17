@@ -22,6 +22,7 @@ const int ultrasonic_trigger_1 = 6;
 const int ultrasonic_echo_1 = 7;
 
 Stepper myStepper(stepsPerRevolution, 2, 3, 4, 5);
+// stepper motor pins: ln1 = 2, ln2 = 4, ln3 = 3, ln4 = 5
 int loc = 1;
 
 int pass_bin = 0;
