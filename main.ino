@@ -27,6 +27,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // LCD: SCL = A5, SDA = A4
 bool hasTrash = false;
 int pass_bin = 0;
 int pass_count = 0;
+int loc = 1;
 
 // Messages
 const char* messages[] = {
